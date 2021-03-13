@@ -3,7 +3,7 @@ Description:
 Autor: Au3C2
 Date: 2020-11-20 19:25:23
 LastEditors: Au3C2
-LastEditTime: 2021-03-13 18:07:26
+LastEditTime: 2021-03-13 18:17:53
 '''
 import os
 import re
@@ -111,21 +111,22 @@ for ym in ymlist:
             with open(filelist[i],'r',encoding='utf8') as html:
                 html.seek(0,0)
                 html_data = list()
+                title_flag = False
                 for line in html:
-                    # length += len(line)
-                    title = re.findall(r'<title>(.*?)</title>', line,re.I)
-                    if title != []:
-                        title = title[0]
-                        # break
-                    if f'{datelist[i]}-' in line:
-                        line = line.replace(datelist[i],datelist[i][-2:])
-                        # html.write(line.replace(datelist[i],datelist[i][-2:]))
-                    html_data.append(line)
-            with open(filelist[i],'w',encoding='utf8') as html:
-                html.writelines(html_data)
+                    if not title_flag:
+                        title = re.findall(r'<title>(.*?)</title>', line,re.I)
+                        if title != []:
+                            title = title[0]
+                            title_flag = True
+                            break
+                    # if f'{datelist[i]}-' in line:
+                    #     line = line.replace(datelist[i],datelist[i][-2:])
+                    # html_data.append(line)
+            # with open(filelist[i],'w',encoding='utf8') as html:
+            #     html.writelines(html_data)
                     
             index_fp.write(f'* [{datelist[i][-2:]}-{title}]({filelist[i]})\n')
-            pass
+
         index_fp.write('\n')
     # htmlpath_new = htmlpath.replace('\\','/').replace('？','').replace('！','!').replace('，',',').replace('”',"'").replace('“',"'")
     # os.rename(htmlpath, htmlpath_new)
