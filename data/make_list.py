@@ -3,7 +3,7 @@ Description:
 Autor: Au3C2
 Date: 2020-11-20 19:25:23
 LastEditors: Au3C2
-LastEditTime: 2021-01-11 23:47:23
+LastEditTime: 2021-03-13 11:28:26
 '''
 import os
 import re
@@ -12,28 +12,61 @@ from glob import glob
 import numpy as np
 import pandas as pd
 
-# authors = ['吃瓜群众专栏pro','宁南山','政事堂2019']
+from shutil import move as mv
+
+authors = ['吃瓜群众','宁南山','政事堂']
 
 rootpath = ''
 
 htmllist = glob(f'{rootpath}*/*.html')
 jpglist = glob(f'{rootpath}*/*.JPG')
-filelist = htmllist + jpglist
 
 #文件重命名并获取月份信息
-for filepath in filelist:
-    filepath_new = filepath.replace('\\','/').replace('？','').replace('！','!').replace('，',',').replace('”',"'").replace('“',"'").replace('（',"(").replace('）',")").replace(' ',"_")
-    os.rename(filepath, filepath_new)
+for i,htmlpath in enumerate(htmllist):
+    htmlpath_new = htmlpath.replace('\\','/').replace('？','').replace('！','!').replace('，',',').replace('”',"'").replace('“',"'").replace('（',"(").replace('）',")").replace(' ',"_")
+    htmllist[i] = htmlpath_new
+    os.rename(htmlpath, htmlpath_new)
 
-htmllist = glob(f'{rootpath}*/*.html')
+# for i,jpgpath in enumerate(jpglist):
+#     jpgpath_new = jpgpath.replace('\\','/').replace('？','').replace('！','!').replace('，',',').replace('”',"'").replace('“',"'").replace('（',"(").replace('）',")").replace(' ',"_")
+#     jpglist[i] = jpgpath_new
+#     os.rename(jpgpath, jpgpath_new)
+
+for author in authors:
+    filelist = glob(f'{author}/*.html')
+    jpglist = glob(f'{author}/*.JPG')
+    for filepath in filelist:
+        name = os.path.basename(filepath)
+        year, month, day = name[:4], name[4:6], name[6:8]
+        if jpglist:
+            with open(filepath,'a+',encoding='utf8') as html:
+                html.seek(0,2) # 文件指针移动到末尾
+                html.write('\n')
+                html.write(f'<p align="center"><img width: 75%; max-width: 75%; height: auto; src="{name[6:]}-评论.JPG" alt="comment"></p>')
+                jpgname = name[6:].replace('.html','')
+                mv(jpglist[0],f'{author}/{year}/{month}/{name[6:]}-评论.JPG')
+        if not os.path.exists(f'{author}/{year}'):
+            os.mkdir(f'{author}/{year}')
+        if not os.path.exists(f'{author}/{year}/{month}'):
+            os.mkdir(f'{author}/{year}/{month}')
+        newpath = f'{author}/{year}/{month}/{name[6:]}'
+        mv(filepath,newpath)
+        
+        
+htmllist = glob(f'{rootpath}*/*/*/*.html')
+jpglist = glob(f'{rootpath}*/*/*/*.JPG')
+
 data = pd.DataFrame(columns=['author','date','title','comment'])
 for htmlpath in htmllist:
     htmlpath = htmlpath.replace('\\','/')
-    author = htmlpath.split('/')[-2]
+    author = htmlpath.split('/')[0]
+    year = htmlpath.split('/')[1]
+    month = htmlpath.split('/')[2]
     filename = os.path.basename(htmlpath)
-    title = filename.replace('.html','')
-    date = title[:8]
-    ym = title[:6]
+    day = filename[:2]
+    title = filename[3:].replace('.html','')
+    date = ''.join([year,month,day])
+    ym = ''.join([year,month])
     commentpath = htmlpath.replace('.html','-评论.JPG')
     if os.path.exists(commentpath):
         comment = True
@@ -71,7 +104,7 @@ for ym in ymlist:
                     if title != []:
                         title = title[0]
                         break
-            index_fp.write(f'* [{datelist[i]}-{title}]({filelist[i]})\n')
+            index_fp.write(f'* [{datelist[i][-2:]}-{title}]({filelist[i]})\n')
             pass
         index_fp.write('\n')
     # htmlpath_new = htmlpath.replace('\\','/').replace('？','').replace('！','!').replace('，',',').replace('”',"'").replace('“',"'")
