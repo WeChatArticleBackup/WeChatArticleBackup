@@ -3,7 +3,7 @@ Description:
 Autor: Au3C2
 Date: 2020-11-20 19:25:23
 LastEditors: Au3C2
-LastEditTime: 2021-03-13 11:28:26
+LastEditTime: 2021-03-13 11:31:21
 '''
 import os
 import re
@@ -44,7 +44,7 @@ for author in authors:
                 html.write('\n')
                 html.write(f'<p align="center"><img width: 75%; max-width: 75%; height: auto; src="{name[6:]}-评论.JPG" alt="comment"></p>')
                 jpgname = name[6:].replace('.html','')
-                mv(jpglist[0],f'{author}/{year}/{month}/{name[6:]}-评论.JPG')
+                mv(jpglist[0],f'{author}/{year}/{month}/{jpgname}-评论.JPG')
         if not os.path.exists(f'{author}/{year}'):
             os.mkdir(f'{author}/{year}')
         if not os.path.exists(f'{author}/{year}/{month}'):
