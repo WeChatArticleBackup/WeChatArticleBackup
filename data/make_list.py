@@ -3,7 +3,7 @@ Description:
 Autor: Au3C2
 Date: 2020-11-20 19:25:23
 LastEditors: Au3C2
-LastEditTime: 2021-03-13 11:37:25
+LastEditTime: 2021-03-13 18:07:26
 '''
 import os
 import re
@@ -40,11 +40,11 @@ for author in authors:
         year, month, day = name[:4], name[4:6], name[6:8]
         if jpglist:
             with open(filepath,'a+',encoding='utf8') as html:
+                jpgname = name[6:].replace('.html','')
                 html.seek(0,2) # 文件指针移动到末尾
                 html.write('\n')
-                html.write(f'<p align="center"><img width: 75%; max-width: 75%; height: auto; src="{name[6:]}-评论.JPG" alt="comment"></p>')
-                jpgname = name[6:].replace('.html','')
-                mv(jpglist[0],f'{author}/{year}/{month}/{jpgname}-评论.JPG')
+                html.write(f'<p align="center"><img width: 75%; max-width: 75%; height: auto; src="{jpgname}-评论.JPG" alt="comment"></p>')
+            mv(jpglist[0],f'{author}/{year}/{month}/{jpgname}-评论.JPG')
         if not os.path.exists(f'{author}/{year}'):
             os.mkdir(f'{author}/{year}')
         if not os.path.exists(f'{author}/{year}/{month}'):
@@ -56,15 +56,15 @@ for author in authors:
 htmllist = glob(f'{rootpath}*/*/*/*.html')
 jpglist = glob(f'{rootpath}*/*/*/*.JPG')
 
-for i,htmlpath in enumerate(htmllist):
-    htmlpath_new = htmlpath.replace('\\','/').replace('？','').replace('！','!').replace('，',',').replace('”',"'").replace('“',"'").replace('（',"(").replace('）',")").replace(' ',"_").replace('：',"_")
-    htmllist[i] = htmlpath_new
-    os.rename(htmlpath, htmlpath_new)
+# for i,htmlpath in enumerate(htmllist):
+#     htmlpath_new = htmlpath.replace('\\','/').replace('？','').replace('！','!').replace('，',',').replace('”',"'").replace('“',"'").replace('（',"(").replace('）',")").replace(' ',"_").replace('：',"_")
+#     htmllist[i] = htmlpath_new
+#     os.rename(htmlpath, htmlpath_new)
 
-for i,jpgpath in enumerate(jpglist):
-    jpgpath_new = jpgpath.replace('\\','/').replace('？','').replace('！','!').replace('，',',').replace('”',"'").replace('“',"'").replace('（',"(").replace('）',")").replace(' ',"_").replace('：',"_")
-    jpglist[i] = jpgpath_new
-    os.rename(jpgpath, jpgpath_new)
+# for i,jpgpath in enumerate(jpglist):
+#     jpgpath_new = jpgpath.replace('\\','/').replace('？','').replace('！','!').replace('，',',').replace('”',"'").replace('“',"'").replace('（',"(").replace('）',")").replace(' ',"_").replace('：',"_")
+#     jpglist[i] = jpgpath_new
+#     os.rename(jpgpath, jpgpath_new)
 
 data = pd.DataFrame(columns=['author','date','title','comment'])
 for htmlpath in htmllist:
@@ -109,11 +109,21 @@ for ym in ymlist:
         # titles = np.sort(aticles['title'].values)
         for i in range(len(articles)):
             with open(filelist[i],'r',encoding='utf8') as html:
+                html.seek(0,0)
+                html_data = list()
                 for line in html:
+                    # length += len(line)
                     title = re.findall(r'<title>(.*?)</title>', line,re.I)
                     if title != []:
                         title = title[0]
-                        break
+                        # break
+                    if f'{datelist[i]}-' in line:
+                        line = line.replace(datelist[i],datelist[i][-2:])
+                        # html.write(line.replace(datelist[i],datelist[i][-2:]))
+                    html_data.append(line)
+            with open(filelist[i],'w',encoding='utf8') as html:
+                html.writelines(html_data)
+                    
             index_fp.write(f'* [{datelist[i][-2:]}-{title}]({filelist[i]})\n')
             pass
         index_fp.write('\n')
