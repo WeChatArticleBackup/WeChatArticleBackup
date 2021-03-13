@@ -3,7 +3,7 @@ Description:
 Autor: Au3C2
 Date: 2020-11-20 19:25:23
 LastEditors: Au3C2
-LastEditTime: 2021-03-13 11:31:21
+LastEditTime: 2021-03-13 11:37:25
 '''
 import os
 import re
@@ -23,7 +23,7 @@ jpglist = glob(f'{rootpath}*/*.JPG')
 
 #文件重命名并获取月份信息
 for i,htmlpath in enumerate(htmllist):
-    htmlpath_new = htmlpath.replace('\\','/').replace('？','').replace('！','!').replace('，',',').replace('”',"'").replace('“',"'").replace('（',"(").replace('）',")").replace(' ',"_")
+    htmlpath_new = htmlpath.replace('\\','/').replace('？','').replace('！','!').replace('，',',').replace('”',"'").replace('“',"'").replace('（',"(").replace('）',")").replace(' ',"_").replace('：',"_")
     htmllist[i] = htmlpath_new
     os.rename(htmlpath, htmlpath_new)
 
@@ -55,6 +55,16 @@ for author in authors:
         
 htmllist = glob(f'{rootpath}*/*/*/*.html')
 jpglist = glob(f'{rootpath}*/*/*/*.JPG')
+
+for i,htmlpath in enumerate(htmllist):
+    htmlpath_new = htmlpath.replace('\\','/').replace('？','').replace('！','!').replace('，',',').replace('”',"'").replace('“',"'").replace('（',"(").replace('）',")").replace(' ',"_").replace('：',"_")
+    htmllist[i] = htmlpath_new
+    os.rename(htmlpath, htmlpath_new)
+
+for i,jpgpath in enumerate(jpglist):
+    jpgpath_new = jpgpath.replace('\\','/').replace('？','').replace('！','!').replace('，',',').replace('”',"'").replace('“',"'").replace('（',"(").replace('）',")").replace(' ',"_").replace('：',"_")
+    jpglist[i] = jpgpath_new
+    os.rename(jpgpath, jpgpath_new)
 
 data = pd.DataFrame(columns=['author','date','title','comment'])
 for htmlpath in htmllist:
