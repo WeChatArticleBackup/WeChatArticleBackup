@@ -3,7 +3,7 @@
  * @Autor: Au3C2
  * @Date: 2021-03-27 13:54:00
  * @LastEditors: Au3C2
- * @LastEditTime: 2021-11-06 10:07:39
+ * @LastEditTime: 2022-04-06 00:03:03
 -->
 <p align="center">
   <a href="" rel="noopener">
@@ -11,6 +11,7 @@
 </p>
 <h1 align="center" >WeChat Article Backup</h1>
 <p align="center"> 一些微信公众号文章的备份 </p>
+<p align="center"> 政事堂文章越来越无聊，本项目停止更新 </p>
 
 ## 🎈 Usage <a name="usage"></a>
 
